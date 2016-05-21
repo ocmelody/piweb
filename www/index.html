@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pi Robot</title>
+
+    <style type="text/css">
+        #camera {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 640px;
+        }
+    </style>
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/modal.css" rel="stylesheet">
+    <script src="js/jquery.js"></script>
+    <script src="js/sockjs-0.3.min.js"></script>
+    
+    <script>
+function init() {
+}            
+function Forward() {
+socket.send("Move f");
+}
+function Stop() {
+socket.send("Move s");
+}
+function Reverse() {
+socket.send("Move b");
+}   
+function TurnLeft() {
+socket.send("Move l");
+}
+function TurnRight() {
+socket.send("Move r");
+}
+
+        function layoutControls() {
+            console.log( screen.width + " " + screen.height );
+            cameraImage.css( 'max-width', screen.width );
+        }
+    
+        $( window ).on( "orientationchange", function() {
+            setTimeout( layoutControls, 300 ); } );
+    
+        $(document).ready(function() { 
+        
+             webSocketURL = "http://" + window.location.hostname + ":9000/robot_control";
+             cameraURL = "http://" + window.location.hostname + ":8080/?action=stream";
+             socket = new SockJS( webSocketURL );
+             var shutdownComplete = false;
+         
+             $("#camera").attr( "src", cameraURL );
+             $( "#btnShutdown" ).click( function() {
+             
+                var SHUTDOWN_TIME_MS = 25000;
+             
+                if ( socket.readyState == SockJS.OPEN ) 
+                {
+                    socket.send( "Shutdown" );
+                }
+                
+                $( "#shutdownProgress" ).removeAttr('style');
+                $( "#shutdownText" ).text( "Shutting Down" );
+                
+                var modalShutdownDialog = $( "#modalShutdownDialog" );
+                modalShutdownDialog.css( "opacity", 1 );
+                modalShutdownDialog.css( "top", "10%" );
+                modalShutdownDialog.css( "visibility", "visible" );
+                
+                // Wait for the Pi to shutdown. The wait time is determined experimentally with an extra couple of seconds
+                // added on for safety
+                setTimeout( function() {
+                    $( "#shutdownProgress" ).css( "visibility", "hidden" );
+                    $( "#shutdownText" ).text( "It is now safe to switch off the power to the Pi" );
+                    shutdownComplete = true;
+                }, SHUTDOWN_TIME_MS );
+                
+              } );
+            
+            // Add a periodic function to keep the camera and socket alive
+            setInterval( function() { 
+                if ( socket.readyState == SockJS.OPEN ) {
+                    socket.send( "StartStreaming" );
+                    $("#camera").attr( "src", cameraURL );
+                    
+                    if ( shutdownComplete )
+                    {
+                        $( "#modalShutdownDialog" ).removeAttr('style');    // Reset the shutdown dialog by removing the style attribute added by jQuery
+                        shutdownComplete = false;
+                    }
+                    
+                } else {
+                    socket = new SockJS( webSocketURL );
+                } }, 1000 );
+            
+            layoutControls();
+        }); 
+    </script>
+
+
+  <style type="text/css">
+button.small {
+margin: 1px 1px 1px 1px;
+width: 24px;
+height: 24px;
+font-size: 12pt;
+font-weight: bold;
+color: black;
+}
+button {
+margin: 1px 1px 1px 1px;
+width: 90px;
+height: 24px;
+font-size: 12pt;
+font-weight: bold;
+color: black;
+}
+
+.trPic .forward{ 
+position:absolute; 
+top:0px;
+left:160px; 
+width:320px; 
+height:140px;  
+opacity:0.3; 
+z-index: 20;
+background: url(images/arrow_forward.png) no-repeat;
+background-position: center center; 
+border:0px solid #000000;
+} 
+.trPic .backward{ 
+position:absolute; 
+top:340px;
+left:160px; 
+width:320px; 
+height:140px;  
+opacity:0.3;
+z-index: 20;
+background: url(images/arrow_reverse.png) no-repeat;
+background-position: center center; 
+border:0px solid #000000;
+}
+
+.trPic .left{ 
+position:absolute; 
+top:0px;
+left:0px; 
+width:160px; 
+height:480px;  
+opacity:0.3;
+z-index: 20;
+background: url(images/arrow_left.png) no-repeat;
+background-position: center center; 
+border:0px solid #000000;
+}
+
+.trPic .right{ 
+position:absolute; 
+top:0px;
+left:480px; 
+width:160px; 
+height:480px;  
+opacity:0.3;
+z-index: 20;
+background: url(images/arrow_right.png) no-repeat;
+background-position: center center; 
+border:0px solid #000000;
+}
+
+.trPic .stop{ 
+position:absolute; 
+top:140px;
+left:160px; 
+width:320px; 
+height:200px;  
+opacity:0.1;
+z-index: 20;
+background: url(images/stop.png) no-repeat;
+background-position: center center; 
+border:0px solid #000000;
+}
+ 
+.forward:hover { 
+opacity:0.7; 
+}
+
+.backward:hover { 
+opacity:0.7; 
+}
+
+.left:hover { 
+opacity:0.7; 
+}
+
+.right:hover { 
+opacity:0.7; 
+}
+
+.stop:hover { 
+opacity:0.4; 
+}
+
+  </style>
+
+
+
+  </head>
+
+  <body>
+    <p><img id="camera" src=""/></p>
+
+<div class="trPic">
+<div class="forward" onmousedown="Forward()">
+</div>
+<div class="backward" onmousedown="Reverse()">
+</div>
+<div class="left" onmousedown="TurnLeft()">
+</div>
+<div class="right" onmousedown="TurnRight()">
+</div>
+<div class="stop" onmousedown="Stop()">
+</div>
+</div>
+
+    <button id="btnShutdown" type="button" class="btn">Shutdown</button>
+    
+    <div id="modalShutdownDialog">
+        <div class="modal-content">
+            
+            <div class="copy">
+                <p id="shutdownText">Shutting Down</p>
+                <img id="shutdownProgress" src="images/ajax-loader.gif"/>
+            </div>
+        </div>
+        <div class="overlay"></div>
+    </div>
+    
+  </body>
+</html>
