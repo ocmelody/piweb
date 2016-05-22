@@ -45,7 +45,6 @@ class ConnectionHandler( sockjs.tornado.SockJSConnection ):
     
     #-----------------------------------------------------------------------------------------------
     def on_open( self, info ):
-        
         pass
         
     #-----------------------------------------------------------------------------------------------
@@ -103,14 +102,10 @@ def robotUpdate():
         return
         
     if robot == None:
-        
         if not robotConnectionResultQueue.empty():
-            
             robot = robotConnectionResultQueue.get()
-        
-    else:
-                
-        robot.update()
+    #else:
+    #    robot.update()
 
 #--------------------------------------------------------------------------------------------------- 
 def signalHandler( signum, frame ):
@@ -152,7 +147,7 @@ if __name__ == "__main__":
     logging.info( "Starting web server..." )
     http_server = tornado.httpserver.HTTPServer( application )
 	
-	#The port number on which the robot control works, change in line 105 in www/index.html too
+    #The port number on which the robot control works, change in line 105 in www/index.html too
     http_server.listen( 9000 )
     
     robotPeriodicCallback = tornado.ioloop.PeriodicCallback( 

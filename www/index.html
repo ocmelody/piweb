@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Pi Robot</title>
-
     <style type="text/css">
         #camera {
             display: block;
             margin-left: auto;
             margin-right: auto;
-            width: 640px;
         }
     </style>
     <link href="css/style.css" rel="stylesheet">
@@ -68,7 +66,7 @@ socket.send("Move r");
                 
                 var modalShutdownDialog = $( "#modalShutdownDialog" );
                 modalShutdownDialog.css( "opacity", 1 );
-                modalShutdownDialog.css( "top", "10%" );
+                modalShutdownDialog.css( "top", "90%" );
                 modalShutdownDialog.css( "visibility", "visible" );
                 
                 // Wait for the Pi to shutdown. The wait time is determined experimentally with an extra couple of seconds
@@ -122,11 +120,11 @@ color: black;
 
 .trPic .forward{ 
 position:absolute; 
-top:0px;
-left:160px; 
-width:320px; 
-height:140px;  
-opacity:0.3; 
+top:300px;
+left:100px; 
+width:160px; 
+height:120px;  
+opacity:1.0; 
 z-index: 20;
 background: url(images/arrow_forward.png) no-repeat;
 background-position: center center; 
@@ -134,11 +132,11 @@ border:0px solid #000000;
 } 
 .trPic .backward{ 
 position:absolute; 
-top:340px;
-left:160px; 
-width:320px; 
-height:140px;  
-opacity:0.3;
+top:520px;
+left:100px; 
+width:160px; 
+height:120px;  
+opacity:1.0;
 z-index: 20;
 background: url(images/arrow_reverse.png) no-repeat;
 background-position: center center; 
@@ -147,11 +145,11 @@ border:0px solid #000000;
 
 .trPic .left{ 
 position:absolute; 
-top:0px;
+top:380px;
 left:0px; 
-width:160px; 
-height:480px;  
-opacity:0.3;
+width:120px; 
+height:160px;  
+opacity:1.0;
 z-index: 20;
 background: url(images/arrow_left.png) no-repeat;
 background-position: center center; 
@@ -160,11 +158,11 @@ border:0px solid #000000;
 
 .trPic .right{ 
 position:absolute; 
-top:0px;
-left:480px; 
-width:160px; 
-height:480px;  
-opacity:0.3;
+top:380px;
+left:240px; 
+width:120px; 
+height:160px;  
+opacity:1.0;
 z-index: 20;
 background: url(images/arrow_right.png) no-repeat;
 background-position: center center; 
@@ -173,11 +171,11 @@ border:0px solid #000000;
 
 .trPic .stop{ 
 position:absolute; 
-top:140px;
-left:160px; 
-width:320px; 
-height:200px;  
-opacity:0.1;
+top:410px;
+left:120px; 
+width:120px; 
+height:120px;  
+opacity:1.0;
 z-index: 20;
 background: url(images/stop.png) no-repeat;
 background-position: center center; 
